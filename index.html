@@ -1,72 +1,628 @@
-[
-    {
-        "id": 1,
-        "type": "cover",
-        "title": "المعرفة المهنية في التدريب",
-        "subtitle": "أحد الركائز الأساسية لرخصة المدربين المهنية - (نسخة ديناميكية)",
-        "author": "محمد علي عسيري",
-        "role": "مدرب وكوتش تطوير الأداء PCC بمعايير ICF"
-    },
-    {
-        "id": 2,
-        "type": "standard",
-        "title": "تعريف المعرفة المهنية",
-        "content": [
-            "الإطار المعرفي الذي يستند إليه المدرب في تصميم وتنفيذ وتقويم التدريب.",
-            "تشمل النظريات، النماذج، المفاهيم، والممارسات المعتمدة علميًا."
-        ],
-        "icon": "BookOpen"
-    },
-    {
-        "id": 3,
-        "type": "list",
-        "title": "أهمية المعرفة المهنية",
-        "items": [
-            "ضمان جودة المخرجات التدريبية.",
-            "اتخاذ قرارات تدريبية مبنية على أسس علمية.",
-            "رفع موثوقية المدرب مهنيًا."
-        ],
-        "icon": "Star"
-    },
-    {
-        "id": 4,
-        "type": "standard",
-        "title": "موقع المعرفة المهنية في الرخصة",
-        "content": [
-            "تمثل الأساس المعرفي لبقية المجالات.",
-            "ترتبط مباشرة بأسئلة التحليل والتطبيق في الاختبار."
-        ],
-        "highlight": "الأساس الذي يُبنى عليه كل شيء"
-    },
-    {
-        "id": 5,
-        "type": "cards",
-        "title": "مؤشرات المجال (هيئة تقويم التعليم والتدريب)",
-        "cards": [
-            { "title": "نظريات التعلم", "desc": "الإلمام الكامل بالنظريات وتطبيقاتها" },
-            { "title": "النماذج التدريبية", "desc": "توظيف النماذج بفعالية" },
-            { "title": "الاستراتيجيات", "desc": "اختيار الاستراتيجية المناسبة للموقف" }
-        ]
-    },
-    {
-        "id": 26,
-        "type": "quiz",
-        "title": "سؤال اختباري (مستوى متوسط)",
-        "question": "أي النظريات التالية تركّز على التعلم بوصفه نتيجة لتغير في السلوك الظاهر نتيجة المثيرات الخارجية؟",
-        "options": [
-            { "id": "a", "text": "النظرية المعرفية" },
-            { "id": "b", "text": "النظرية البنائية" },
-            { "id": "c", "text": "النظرية السلوكية", "correct": true },
-            { "id": "d", "text": "التعلم الاجتماعي" }
-        ],
-        "indicator": "المؤشر: يوظّف نظريات التعلم المناسبة في المواقف التدريبية"
-    },
-    {
-        "id": 31,
-        "type": "cover",
-        "title": "نهاية العرض الديناميكي",
-        "subtitle": "تم تحميل هذه البيانات من ملف خارجي وتم حفظ تقدمك تلقائياً.",
-        "author": "شكراً لمتابعتكم",
-        "role": "محمد علي عسيري - PCC"
-    }
-]
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكي رخصة المدرب المعتمد</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e67e22; /* برتقالي للمراجعة */
+            --neutral-color: #bdc3c7;
+            --text-color: #2c3e50;
+            --bg-color: #f5f6fa;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* حاوية التعليمات */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .intro-box {
+            max-width: 800px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid var(--secondary-color);
+        }
+
+        .btn-start {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+        }
+
+        /* التخطيط الرئيسي للاختبار */
+        .main-container {
+            display: none; /* مخفي حتى يبدأ الاختبار */
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100vh;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timer-box {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .grid-item.active { border: 2px solid var(--secondary-color); font-weight: 900; }
+        .grid-item.answered { background-color: var(--neutral-color); color: white; border-color: var(--neutral-color); }
+        .grid-item.marked { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .grid-item.marked.answered { background: linear-gradient(45deg, var(--neutral-color) 50%, var(--accent-color) 50%); }
+
+        /* منطقة السؤال */
+        .content-area {
+            padding: 40px;
+            overflow-y: auto;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .scenario-text {
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 4px solid var(--secondary-color);
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover { border-color: var(--secondary-color); background: #f0f8ff; }
+        .option-item.selected { border-color: var(--secondary-color); background: #e1f0fa; }
+        
+        .option-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-left: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .option-item.selected .option-circle::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+        }
+
+        /* أزرار التحكم */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .btn-nav { background: #ecf0f1; color: var(--text-color); }
+        .btn-nav:hover { background: #dcdcdc; }
+        
+        .btn-mark { 
+            background: transparent; 
+            border: 2px solid var(--accent-color); 
+            color: var(--accent-color); 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-mark.active { background: var(--accent-color); color: white; }
+
+        .btn-submit { background: var(--success-color); color: white; }
+        .btn-submit:hover { background: #219150; }
+
+        /* شاشة النتائج */
+        #results-screen {
+            display: none;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .score-card {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .review-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-right: 5px solid #ddd;
+        }
+        .review-card.correct { border-color: var(--success-color); }
+        .review-card.wrong { border-color: var(--danger-color); }
+
+        .justification {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 5px;
+            color: #856404;
+        }
+        .justification strong { display: block; margin-bottom: 5px; }
+
+        /* تحسينات للجوال */
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+            .sidebar { padding: 10px; height: auto; max-height: 150px; flex-direction: row; align-items: center; gap: 15px;}
+            .timer-box { margin: 0; padding: 10px; min-width: 80px; font-size: 1.2em; }
+            .questions-grid { display: flex; overflow-x: auto; gap: 5px; padding-bottom: 5px; }
+            .grid-item { min-width: 35px; height: 35px; }
+            .controls { flex-wrap: wrap; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="intro-box">
+            <h1>محاكي اختبار الرخص المهنية للمدربين</h1>
+            <div style="text-align: right; margin: 30px 0;">
+                <h3>عزيزي / عزيزتي</h3>
+                <p>هذا الاختبار نموذج محاكي لاختبار الرخص المهنية للمدربين يهدف إلى التدريب على طبيعة التعامل مع الأسئلة والتركيز الذهني وإدارة الوقت بفعالية.</p>
+                <ul style="list-style-type: disc; padding-right: 20px;">
+                    <li><strong>الوقت المخصص:</strong> 27 دقيقة.</li>
+                    <li><strong>عدد الأسئلة:</strong> 25 سؤالاً (مستوى متقدم - مواقف تدريبية).</li>
+                    <li><strong>التعليمات:</strong> يتطلب الاختبار قراءة سريعة ودقيقة للمواقف الطويلة لاختيار الحل الأمثل.</li>
+                </ul>
+                <p style="color: var(--danger-color); font-weight: bold;">ملاحظة: سيظهر تنبيه عند تبقي 5 دقائق.</p>
+            </div>
+            <button class="btn-start" onclick="startTest()">ابدأ الاختبار الآن</button>
+        </div>
+    </div>
+
+    <div class="main-container" id="test-container">
+        <aside class="sidebar">
+            <div class="timer-box" id="timer">27:00</div>
+            <div class="questions-grid" id="grid-container">
+                </div>
+            <button class="btn btn-submit" onclick="finishTest()" style="margin-top: auto; width: 100%;">إنهاء الاختبار</button>
+        </aside>
+
+        <main class="content-area">
+            <div id="question-container">
+                </div>
+
+            <div class="controls">
+                <button class="btn btn-nav" id="prev-btn" onclick="prevQuestion()">السابق</button>
+                <button class="btn btn-mark" id="mark-btn" onclick="toggleMark()">
+                    <span>🚩</span> <span id="mark-text">ميز السؤال للمراجعة</span>
+                </button>
+                <button class="btn btn-nav" id="next-btn" onclick="nextQuestion()">التالي</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="results-screen">
+        <div class="score-card">
+            <h2>نتائج الاختبار</h2>
+            <h1 id="final-score" style="font-size: 3em; color: var(--secondary-color);">0/25</h1>
+            <p id="time-taken">الوقت المستغرق: --:--</p>
+            <button class="btn btn-nav" onclick="location.reload()">إعادة الاختبار</button>
+        </div>
+        <div id="detailed-results">
+            </div>
+    </div>
+
+    <script>
+        // === بيانات الأسئلة (نموذج لأول 5 أسئلة معقدة + 20 قالب فارغ لتكملتها) ===
+        const questionsDB = [
+            {
+                id: 1,
+                scenario: "أثناء تقديمك لدورة تدريبية متقدمة حول 'التخطيط الاستراتيجي للمؤسسات'، لاحظت وجود مشارك (مدير تنفيذي) يعترض بشكل متكرر على النماذج النظرية التي تطرحها، مستشهداً بخبرته العملية الطويلة التي تخالف ما تقوله، مما بدأ يؤثر على قناعة باقي المتدربين بالمحتوى ويخلق جواً من التشكيك. لقد حاولت احتواءه بالثناء على خبرته سابقاً لكنه استمر في المقاطعة بحدة.",
+                question: "بناءً على مبادئ تعليم الكبار وإدارة القاعة الصعبة، ما هو التصرف الأكثر احترافية للتعامل مع هذا الموقف؟",
+                options: [
+                    "تجاهل اعتراضاته والاستمرار في الشرح لعدم إضاعة وقت الدورة، ثم التحدث معه منفرداً في فترة الاستراحة.",
+                    "الدخول معه في نقاش علمي تفصيلي لإثبات صحة النظريات المطروحة بالأدلة والبراهين لإسكات اعتراضاته أمام الجمهور.",
+                    "استثمار اعتراضه بتحويل الموقف إلى 'دراسـة حالة' وطلب رأي باقي المتدربين في كيفية التوفيق بين النظرية وتجربته العملية، مما يعيد التوازن للقاعة.",
+                    "تذكيره بلباقة بقواعد الدورة التدريبية التي تم الاتفاق عليها في البداية والتي تمنع المقاطعات المتكررة حفاظاً على التسلسل الفكري."
+                ],
+                correct: 2, // Index 2 = الخيار الثالث
+                rationale: "الإجابة الصحيحة هي استثمار الاعتراض. في تدريب القيادات والخبراء، المجابهة (الخيار الثاني) تخلق عناداً، والتجاهل (الخيار الأول) يضعف موقف المدرب، والتذكير بالقواعد (الخيار الرابع) قد يبدو مدرسياً. الحل الأمثل هو 'التيسير' (Facilitation) ودمج خبرته مع المحتوى ليصبح شريكاً في التعلم لا خصماً."
+            },
+            {
+                id: 2,
+                scenario: "تم تكليفك بتصميم حقيبة تدريبية لجهة حكومية تهدف إلى رفع كفاءة الموظفين في استخدام التقنيات الحديثة. عند إجراء تحليل الاحتياجات التدريبية (TNA)، وجدت فجوة كبيرة بين الموظفين القدامى الذين يقاومون التغيير، والموظفين الجدد المتحمسين للتقنية. الجهة تصر على دمج الفئتين في قاعة واحدة لتعزيز الروح الواحدة.",
+                question: "ما هي الاستراتيجية التدريبية الأنسب في تصميم الأنشطة داخل الحقيبة لضمان فاعلية التدريب للطرفين؟",
+                options: [
+                    "تصميم الأنشطة بمستوى متوسط يناسب الجميع، مع التركيز على الأساسيات لضمان فهم الموظفين القدامى.",
+                    "استخدام استراتيجية 'التعلم بالأقران' (Peer Learning) بحيث يتم دمج القدامى والجدد في مجموعات عمل وتكليف الجدد بمساعدة القدامى في التطبيق التقني.",
+                    "التركيز على الجانب النظري وإقناع القدامى بأهمية التقنية، وترك التطبيقات العملية للموظفين الجدد في ورش عمل مستقلة لاحقاً.",
+                    "تصميم مسارين داخل القاعة، بحيث يتم إعطاء مهام متقدمة للجدد ومهام بسيطة للقدامى لتجنب إحراج أي طرف."
+                ],
+                correct: 1, // Index 1 = الخيار الثاني
+                rationale: "التعلم بالأقران هو الحل الأمثل لردم الفجوة الجيلية (Generational Gap). عزلهم (الخيار الرابع) يخالف طلب العميل، والتركيز على المتوسط (الخيار الأول) سيصيب الجدد بالملل، والنظري (الخيار الثالث) لا يحقق هدف رفع الكفاءة. الدمج يحقق نقل الخبرة التقنية من الجديد للقديم، والخبرة الإدارية من القديم للجديد."
+            },
+            {
+                id: 3,
+                scenario: "في اليوم الثالث من برنامج تدريبي مكثف مدته 5 أيام، لاحظت انخفاضاً حاداً في مستويات الطاقة لدى المتدربين بعد استراحة الغداء، وبدأ البعض ينشغل بالهواتف. الموضوع المتبقي لليوم هو موضوع نظري دسم ومهم جداً للاختبار النهائي.",
+                question: "وفقاً لمنحنى النشاط ودورة كولب للتعلم، كيف يجب أن تعدل خطتك التدريبية لهذه الجلسة فوراً؟",
+                options: [
+                    "الاستمرار في الشرح النظري مع رفع نبرة الصوت والتحرك كثيراً في القاعة لجذب الانتباه.",
+                    "إلغاء الجزء النظري واستبداله بلعبة تدريبية حركية خارج القاعة لتجديد النشاط فقط.",
+                    "البدء بنشاط 'كسر جمود' سريع، ثم تحويل المحتوى النظري إلى ورشة عمل استنتاجية (Jigsaw Puzzle) يقوم فيها المتدربون بتركيب المعلومات بأنفسهم.",
+                    "إعطاء استراحة إضافية لمدة 15 دقيقة ليتمكنوا من شرب القهوة واستعادة نشاطهم."
+                ],
+                correct: 2, // Index 2 = الخيار الثالث
+                rationale: "فترة ما بعد الغداء تسمى (The Graveyard Shift). المحاضرة (الخيار الأول) ستفشل. اللعب فقط (الخيار الثاني) يضيع المحتوى المهم. الاستراحة الإضافية (الخيار الرابع) تضيع الوقت. الحل هو التعلم النشط (Active Learning) الذي يجبر العقل على العمل من خلال استراتيجية الجيغسو أو العمل الجماعي لاستنتاج النظرية."
+            },
+            {
+                id: 4,
+                scenario: "أنت مدرب معتمد تقدم دورة عن 'الذكاء العاطفي'. سألك أحد المتدربين سؤالاً ذكياً جداً عن علاقة اللوزة الدماغية (Amygdala) باتخاذ القرار تحت الضغط، وأنت لا تملك الإجابة العلمية الدقيقة لهذا السؤال التخصصي.",
+                question: "ما هو الرد الذي يحافظ على مصداقيتك المهنية ويعزز بيئة التعلم؟",
+                options: [
+                    "محاولة تقديم إجابة عامة ومنطقية بناءً على خبرتك لتجنب الظهور بمظهر الجاهل أمام المتدربين.",
+                    "الاعتراف بشجاعة بعدم معرفة التفاصيل الدقيقة، ووعد المتدرب بالبحث عن المعلومة الموثقة وتزويده بها في اليوم التالي، وسؤال القاعة إذا كان أحدهم يملك معلومة.",
+                    "تحويل السؤال للمتدرب نفسه وسؤاله: 'ما رأيك أنت؟' لتقييم فهمه واستغلال الوقت للتفكير في إجابة.",
+                    "تأجيل الإجابة لنهاية اليوم بحجة ضيق الوقت، ثم البحث عنها في الاستراحة."
+                ],
+                correct: 1, // Index 1 = الخيار الثاني
+                rationale: "المدرب المحترف ليس موسوعة. محاولة التأليف (الخيار الأول) تدمر المصداقية فوراً إذا اكتشف أحدهم الخطأ. المراوغة (الخيار الثالث والرابع) مكشوفة. المصداقية (Credibility) تبنى بالصدق المهني. الاعتراف مع الوعد بالبحث هو السلوك القياسي."
+            },
+            {
+                id: 5,
+                scenario: "تقوم بتقييم أداء متدرب في دورة تدريب المدربين (TOT) أثناء تقديمه لعرضه المصغر. لاحظت أن لغة جسده ممتازة، وصوته واضح، لكن المحتوى العلمي الذي يقدمه به أخطاء فادحة ومعلومات مغلوطة قد تضر بالمتلقي.",
+                question: "كيف تقدم له التغذية الراجعة (Feedback) وفقاً لنموذج الساندوتش (Sandwich Model) بفاعلية دون تحطيم ثقته؟",
+                options: [
+                    "البدء بذكر الأخطاء العلمية فوراً لأنها خطيرة ولا تحتمل المجاملة، ثم ختم الحديث بمدح صوته.",
+                    "الإشادة بمهارات العرض الرائعة لديه، ثم توضيح ضرورة مراجعة المصادر العلمية وتصحيح المعلومات بدقة، وختم الحديث بالثقة في قدرته على التطور.",
+                    "تجاهل الأخطاء العلمية حالياً والتركيز على مهارات العرض والالقاء لأن هذا هو هدف دورة TOT الأساسي.",
+                    "الطلب من باقي المتدربين نقد المحتوى العلمي له بدلاً منك لرفع الحرج عنك."
+                ],
+                correct: 1, // Index 1 = الخيار الثاني
+                rationale: "نموذج الساندوتش يتطلب: إيجابي -> تطويري -> إيجابي. الخيار الأول (صدمة). الخيار الثالث (خيانة للأمانة العلمية). الخيار الرابع (قد يكون جارحاً من الزملاء). الخيار الثاني هو التطبيق الصحيح: تعزيز الثقة بمهارات العرض، ثم تصحيح الخطأ الجوهري بوضوح، ثم الدعم المستقبلي."
+            },
+            // ... يمكنك نسخ ولصق الكود أدناه لتكملة الـ 25 سؤال ...
+            // قم بتكرار هذا القالب وتغيير البيانات
+            {
+                id: 6,
+                scenario: "نص الموقف للسؤال السادس...",
+                question: "نص السؤال...",
+                options: ["خيار 1", "خيار 2", "خيار 3", "خيار 4"],
+                correct: 0,
+                rationale: "التبرير..."
+            }
+            // استمر حتى السؤال 25
+        ];
+
+        // لتوليد باقي الأسئلة الوهمية للتجربة (سأقوم بتوليدها برمجياً لغرض العرض فقط)
+        // في النسخة النهائية، استبدل هذا الكود ببيانات حقيقية
+        for(let i=6; i<=25; i++){
+            questionsDB.push({
+                id: i,
+                scenario: `هذا هو سيناريو افتراضي للسؤال رقم ${i}. يهدف هذا النص الطويل لمحاكاة الأسئلة التي تتطلب قراءة وتركيزاً عالياً من المتدرب. تخيل موقفاً تدريبياً معقداً هنا يتطلب حلاً إدارياً أو تربوياً.`,
+                question: `ما هو التصرف الأمثل في الموقف رقم ${i}؟`,
+                options: [
+                    "الخيار الأول الذي يبدو صحيحاً ولكنه غير دقيق.",
+                    "الخيار الثاني الصحيح تماماً.",
+                    "الخيار الثالث المشتت القوي.",
+                    "الخيار الرابع المستبعد."
+                ],
+                correct: 1,
+                rationale: `التبرير الصحيح للسؤال ${i} يعتمد على نظريات التدريب الحديثة.`
+            });
+        }
+
+        // === منطق التطبيق ===
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questionsDB.length).fill(null); // تخزين الإجابات
+        let markedQuestions = new Set();
+        let timerInterval;
+        let timeRemaining = 27 * 60; // 27 دقيقة بالثواني
+        let warningShown = false;
+
+        // عناصر DOM
+        const introScreen = document.getElementById('intro-screen');
+        const mainContainer = document.getElementById('test-container');
+        const resultsScreen = document.getElementById('results-screen');
+        const questionContainer = document.getElementById('question-container');
+        const gridContainer = document.getElementById('grid-container');
+        const timerDisplay = document.getElementById('timer');
+        const markText = document.getElementById('mark-text');
+        const markBtn = document.getElementById('mark-btn');
+
+        function startTest() {
+            introScreen.style.display = 'none';
+            mainContainer.style.display = 'grid'; // أعدنا التخطيط للشبكة
+            if(window.innerWidth <= 768) mainContainer.style.display = 'flex'; // للجوال
+            if(window.innerWidth <= 768) mainContainer.style.flexDirection = 'column';
+
+            initGrid();
+            renderQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                // تنسيق الوقت
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // التحذير عند 5 دقائق (300 ثانية)
+                if (timeRemaining === 300 && !warningShown) {
+                    alert("⚠️ تنبيه: بقي من الوقت 5 دقائق فقط!");
+                    timerDisplay.style.color = "var(--accent-color)";
+                    warningShown = true;
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    finishTest(true);
+                }
+            }, 1000);
+        }
+
+        function initGrid() {
+            gridContainer.innerHTML = '';
+            questionsDB.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.id = `grid-${index}`;
+                item.textContent = index + 1;
+                item.onclick = () => jumpToQuestion(index);
+                if (index === 0) item.classList.add('active');
+                gridContainer.appendChild(item);
+            });
+        }
+
+        function renderQuestion() {
+            const q = questionsDB[currentQuestionIndex];
+            const isMarked = markedQuestions.has(currentQuestionIndex);
+            
+            // تحديث زر التمييز
+            markBtn.classList.toggle('active', isMarked);
+            markText.textContent = isMarked ? "إلغاء تمييز السؤال" : "ميز السؤال للمراجعة";
+
+            // بناء HTML السؤال
+            let html = `
+                <div class="question-card">
+                    <div style="margin-bottom:10px; color:#7f8c8d;">السؤال ${currentQuestionIndex + 1} من ${questionsDB.length}</div>
+                    <div class="scenario-text">${q.scenario}</div>
+                    <div class="question-text">${q.question}</div>
+                    <ul class="options-list">
+            `;
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                html += `
+                    <li class="option-item ${isSelected ? 'selected' : ''}" onclick="selectOption(${idx})">
+                        ${opt}
+                        <div class="option-circle"></div>
+                    </li>
+                `;
+            });
+
+            html += `</ul></div>`;
+            questionContainer.innerHTML = html;
+
+            // تحديث الشبكة الجانبية
+            updateGridStatus();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion(); // إعادة رسم لتحديث الستايل
+        }
+
+        function toggleMark() {
+            if (markedQuestions.has(currentQuestionIndex)) {
+                markedQuestions.delete(currentQuestionIndex);
+            } else {
+                markedQuestions.add(currentQuestionIndex);
+            }
+            renderQuestion();
+        }
+
+        function updateGridStatus() {
+            // إزالة الكلاس النشط من الجميع
+            document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('active'));
+            // إضافة النشط للحالي
+            const currentEl = document.getElementById(`grid-${currentQuestionIndex}`);
+            if(currentEl) currentEl.classList.add('active');
+
+            // تحديث الألوان بناء على الحالة
+            questionsDB.forEach((_, idx) => {
+                const item = document.getElementById(`grid-${idx}`);
+                item.className = 'grid-item'; // reset
+                if (idx === currentQuestionIndex) item.classList.add('active');
+                
+                const answered = userAnswers[idx] !== null;
+                const marked = markedQuestions.has(idx);
+
+                if (answered) item.classList.add('answered');
+                if (marked) item.classList.add('marked');
+            });
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questionsDB.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestionIndex = index;
+            renderQuestion();
+        }
+
+        function finishTest(force = false) {
+            if (!force) {
+                const unanswered = userAnswers.filter(a => a === null).length;
+                if (!confirm(`هل أنت متأكد من إنهاء الاختبار؟\nلديك ${unanswered} أسئلة غير مجابة.`)) return;
+            }
+            
+            clearInterval(timerInterval);
+            mainContainer.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            calculateResults();
+        }
+
+        function calculateResults() {
+            let score = 0;
+            let resultsHTML = '';
+
+            questionsDB.forEach((q, index) => {
+                const userChoice = userAnswers[index];
+                const isCorrect = userChoice === q.correct;
+                if (isCorrect) score++;
+
+                const userChoiceText = userChoice !== null ? q.options[userChoice] : "لم يتم الإجابة";
+                const correctChoiceText = q.options[q.correct];
+
+                resultsHTML += `
+                    <div class="review-card ${isCorrect ? 'correct' : 'wrong'}">
+                        <h3>السؤال ${index + 1}</h3>
+                        <p class="scenario-text" style="font-size:0.9em; padding:10px;">${q.scenario}</p>
+                        <p><strong>السؤال:</strong> ${q.question}</p>
+                        <p style="color: ${isCorrect ? 'green' : 'red'}">
+                            <strong>إجابتك:</strong> ${userChoiceText}
+                        </p>
+                        ${!isCorrect ? `<p style="color: green"><strong>الإجابة الصحيحة:</strong> ${correctChoiceText}</p>` : ''}
+                        
+                        <div class="justification">
+                            <strong>💡 المبرر التربوي:</strong>
+                            ${q.rationale}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('final-score').textContent = `${score} / ${questionsDB.length}`;
+            document.getElementById('final-score').style.color = score >= 15 ? 'var(--success-color)' : 'var(--danger-color)';
+            
+            // حساب الوقت المستغرق
+            const timeSpent = (27 * 60) - timeRemaining;
+            const minSpent = Math.floor(timeSpent / 60);
+            const secSpent = timeSpent % 60;
+            document.getElementById('time-taken').textContent = `الوقت المستغرق: ${minSpent} دقيقة و ${secSpent} ثانية`;
+
+            document.getElementById('detailed-results').innerHTML = resultsHTML;
+        }
+    </script>
+</body>
+</html>
